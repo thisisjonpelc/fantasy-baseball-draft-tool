@@ -5,16 +5,68 @@ import './App.css'
 import Papa from 'papaparse'
 import type { ParseResult } from 'papaparse'
 
+interface DataRow {
+  Name: string
+  Team: string
+  POS: string
+  ADP: string
+  PA: string
+  rPTS: string
+  PTS: string
+  aPOS: string
+  Dollars: string
+  NameASCII: string
+  PlayerId: string
+  MLBAMID: string
+}
+
+interface Player {
+  name: string,
+  team: string,
+  position: String,
+  adp: number,
+  value: number
+}
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [hitterData, setHitterData] = useState<Player[]>([])
+  const [pitcherData, setPitcherData] = useState<Player[]>([])
 
   const loadData = () => {
-    console.log('LOADING DATA')
-
-   Papa.parse('/fangraphs-auction-calculator-hitters.csv', {
+   Papa.parse<DataRow>('/fangraphs-auction-calculator-hitters.csv', {
     header: true,
     download: true,
-    complete: (results) => {console.log(results)}
+    complete: (results: ParseResult<DataRow>) => {
+      const hitterData = results.data.map(({Name, Team, POS, ADP, Dollars}) => {
+        return {
+          name: Name,
+          team: Team,
+          position: POS,
+          adp: +ADP,
+          value: +Dollars
+        }
+      })
+
+      setHitterData(hitterData)
+    }
+   })
+
+   Papa.parse<DataRow>('/fangraphs-auction-calculator-pitchers.csv', {
+    header: true,
+    download: true,
+    complete: (results: ParseResult<DataRow>) => {
+      const pitcherData =  results.data.map(({Name, Team, POS, ADP, Dollars}) => {
+        return {
+          name: Name,
+          team: Team,
+          position: POS,
+          adp: +ADP,
+          value: +Dollars
+        }
+      })
+
+      setPitcherData(pitcherData)
+    }
    })
   }
 
@@ -22,30 +74,9 @@ function App() {
    loadData()
   }, [])
 
-
-
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+     
     </>
   )
 }
