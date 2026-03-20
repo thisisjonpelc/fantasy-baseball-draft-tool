@@ -55,7 +55,7 @@ export const PlayerTable = ({
         <Table.Thead>
           <Table.Tr>
             <Table.Th w={130}>Name</Table.Th>
-            <Table.Th w={80}>Position</Table.Th>
+            <Table.Th w={80}>{position ?? "Position"}</Table.Th>
             <Table.Th w={80}>ADP</Table.Th>
             <Table.Th w={80}>Value</Table.Th>
           </Table.Tr>

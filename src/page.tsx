@@ -4,7 +4,7 @@ import Papa from "papaparse";
 import type { ParseResult } from "papaparse";
 import { PlayerTable } from "./components/PlayerTable";
 import type { Player } from "./components/PlayerTable";
-import { Flex, Group, TextInput, Title } from "@mantine/core";
+import { Flex, Group, Stack, TextInput, Title } from "@mantine/core";
 
 interface DataRow {
   Name: string;
@@ -26,6 +26,7 @@ export const FantasyBaseballDraftTool = () => {
   const [pitcherData, setPitcherData] = useState<Player[]>([]);
   const [draftedPlayers, setDraftedPlayers] = useState<Player[]>([]);
   const [pickNumber, setPickNumber] = useState(1);
+  const [playerSearch, setPlayerSearch] = useState("");
 
   const loadData = () => {
     Papa.parse<DataRow>("/fangraphs-auction-calculator-hitters.csv", {
@@ -78,24 +79,33 @@ export const FantasyBaseballDraftTool = () => {
   const handleDraft = (player: Player) => {
     setDraftedPlayers((prev) => [...prev, player]);
     setPickNumber(pickNumber + 1);
+    setPlayerSearch("");
   };
 
   const draftedIds = new Set(draftedPlayers.map((p) => p.id));
-  const undraftedHitters = hitterData.filter((p) => !draftedIds.has(p.id));
-  const undraftedPitchers = pitcherData.filter((p) => !draftedIds.has(p.id));
+  const search = playerSearch.toLowerCase();
+  const undraftedHitters = hitterData.filter(
+    (p) => !draftedIds.has(p.id) && p.name.toLowerCase().includes(search),
+  );
+  const undraftedPitchers = pitcherData.filter(
+    (p) => !draftedIds.has(p.id) && p.name.toLowerCase().includes(search),
+  );
 
   const roundNumber = Math.ceil(pickNumber / 12);
   const pickInRound = ((pickNumber - 1) % 12) + 1;
 
   return (
-    <>
-      <Title>
-        Round: {roundNumber} Pick: {pickInRound} Overall: {pickNumber}
-      </Title>
-      <TextInput
-        label="Player Search"
-        description="Search for a player by name"
-      />
+    <Stack>
+      <Flex gap={"md"} align={"flex-end"}>
+        <Title>
+          Round: {roundNumber} Pick: {pickInRound} Overall: {pickNumber}
+        </Title>
+        <TextInput
+          label="Player Search"
+          value={playerSearch}
+          onChange={(event) => setPlayerSearch(event.currentTarget.value)}
+        />
+      </Flex>
       <Group gap="md" grow>
         <PlayerTable players={undraftedHitters} onDraft={handleDraft} />
         <PlayerTable players={undraftedPitchers} onDraft={handleDraft} />
@@ -147,6 +157,6 @@ export const FantasyBaseballDraftTool = () => {
           position="RP"
         />
       </Flex>
-    </>
+    </Stack>
   );
 };
