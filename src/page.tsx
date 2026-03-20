@@ -68,5 +68,16 @@ interface DataRow {
    loadData()
   }, [])
 
-  return <PlayerTable players={hitterData} />
+  return (
+    <>
+      <PlayerTable players={hitterData} />
+      <PlayerTable players={hitterData} position='C' />
+      <PlayerTable players={hitterData} position='1B' />
+      <PlayerTable players={hitterData} position='2B' />
+      <PlayerTable players={hitterData} position='3B' />
+      <PlayerTable players={hitterData} position='SS' />
+      <PlayerTable players={hitterData} position='OF' />
+      <PlayerTable players={hitterData} position='DH' />
+    </>
+  )
 }
