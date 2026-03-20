@@ -29,11 +29,15 @@ export const PlayerTable = ({ players, position }: PlayerTableProps) => {
   ));
 
   return (
-    <ScrollArea h={position ? 200 : 800}>
+    <ScrollArea h={position ? 200 : 600} w={position ? undefined : "100%"}>
       <Table
         stickyHeader
         layout="fixed"
-        style={{ textAlign: "left", tableLayout: "fixed", width: 370 }}
+        style={{
+          textAlign: "left",
+          tableLayout: "fixed",
+          width: position ? 370 : "100%",
+        }}
       >
         <Table.Thead>
           <Table.Tr>
