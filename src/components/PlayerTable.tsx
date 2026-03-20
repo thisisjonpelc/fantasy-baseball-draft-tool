@@ -11,14 +11,19 @@ export interface Player {
 
 interface PlayerTableProps {
   players: Player[]
+  position?: string
 }
 
-export const PlayerTable = ({ players }: PlayerTableProps) => {
-  const rows = players.map(({ name, team, position, value, adp, id }) => (
+export const PlayerTable = ({ players, position }: PlayerTableProps) => {
+  const filtered = position
+    ? players.filter(p => p.position.split('/').includes(position))
+    : players
+
+  const rows = filtered.map(({ name, team, position: pos, value, adp, id }) => (
     <Table.Tr key={id}>
       <Table.Td>{name}</Table.Td>
       <Table.Td>{team}</Table.Td>
-      <Table.Td>{position}</Table.Td>
+      <Table.Td>{pos}</Table.Td>
       <Table.Td>{adp.toFixed(2)}</Table.Td>
       <Table.Td>{value.toFixed(2)}</Table.Td>
     </Table.Tr>
