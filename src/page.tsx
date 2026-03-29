@@ -4,7 +4,7 @@ import Papa from "papaparse";
 import type { ParseResult } from "papaparse";
 import { PlayerTable } from "./components/PlayerTable";
 import type { Player } from "./components/PlayerTable";
-import { Flex, Group, Stack, TextInput, Title } from "@mantine/core";
+import { Flex, Group, Stack, Tabs, TextInput, Title } from "@mantine/core";
 
 interface DataRow {
   Name: string;
@@ -123,17 +123,28 @@ export const FantasyBaseballDraftTool = () => {
         <PlayerTable players={undraftedHitters} onDraft={handleDraft} />
         <PlayerTable players={undraftedPitchers} onDraft={handleDraft} />
       </Group>
-      <Flex gap={"md"} direction={"row"} wrap={"wrap"}>
-        <PlayerTable players={catchers} onDraft={handleDraft} position="C" />
-        <PlayerTable players={firstBase} onDraft={handleDraft} position="1B" />
-        <PlayerTable players={secondBase} onDraft={handleDraft} position="2B" />
-        <PlayerTable players={thirdBase} onDraft={handleDraft} position="3B" />
-        <PlayerTable players={shortstops} onDraft={handleDraft} position="SS" />
-        <PlayerTable players={outfielders} onDraft={handleDraft} position="OF" />
-        <PlayerTable players={designatedHitters} onDraft={handleDraft} position="DH" />
-        <PlayerTable players={startingPitchers} onDraft={handleDraft} position="SP" />
-        <PlayerTable players={relievers} onDraft={handleDraft} position="RP" />
-      </Flex>
+      <Tabs defaultValue="C">
+        <Tabs.List>
+          <Tabs.Tab value="C">C</Tabs.Tab>
+          <Tabs.Tab value="1B">1B</Tabs.Tab>
+          <Tabs.Tab value="2B">2B</Tabs.Tab>
+          <Tabs.Tab value="3B">3B</Tabs.Tab>
+          <Tabs.Tab value="SS">SS</Tabs.Tab>
+          <Tabs.Tab value="OF">OF</Tabs.Tab>
+          <Tabs.Tab value="DH">DH</Tabs.Tab>
+          <Tabs.Tab value="SP">SP</Tabs.Tab>
+          <Tabs.Tab value="RP">RP</Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Panel value="C"><PlayerTable players={catchers} onDraft={handleDraft} position="C" /></Tabs.Panel>
+        <Tabs.Panel value="1B"><PlayerTable players={firstBase} onDraft={handleDraft} position="1B" /></Tabs.Panel>
+        <Tabs.Panel value="2B"><PlayerTable players={secondBase} onDraft={handleDraft} position="2B" /></Tabs.Panel>
+        <Tabs.Panel value="3B"><PlayerTable players={thirdBase} onDraft={handleDraft} position="3B" /></Tabs.Panel>
+        <Tabs.Panel value="SS"><PlayerTable players={shortstops} onDraft={handleDraft} position="SS" /></Tabs.Panel>
+        <Tabs.Panel value="OF"><PlayerTable players={outfielders} onDraft={handleDraft} position="OF" /></Tabs.Panel>
+        <Tabs.Panel value="DH"><PlayerTable players={designatedHitters} onDraft={handleDraft} position="DH" /></Tabs.Panel>
+        <Tabs.Panel value="SP"><PlayerTable players={startingPitchers} onDraft={handleDraft} position="SP" /></Tabs.Panel>
+        <Tabs.Panel value="RP"><PlayerTable players={relievers} onDraft={handleDraft} position="RP" /></Tabs.Panel>
+      </Tabs>
     </Stack>
   );
 };
