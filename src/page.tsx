@@ -91,6 +91,19 @@ export const FantasyBaseballDraftTool = () => {
     (p) => !draftedIds.has(p.id) && p.name.toLowerCase().includes(search),
   );
 
+  const byPosition = (players: Player[], pos: string) =>
+    players.filter((p) => p.position.split("/").includes(pos));
+
+  const catchers = byPosition(undraftedHitters, "C");
+  const firstBase = byPosition(undraftedHitters, "1B");
+  const secondBase = byPosition(undraftedHitters, "2B");
+  const thirdBase = byPosition(undraftedHitters, "3B");
+  const shortstops = byPosition(undraftedHitters, "SS");
+  const outfielders = byPosition(undraftedHitters, "OF");
+  const designatedHitters = byPosition(undraftedHitters, "DH");
+  const startingPitchers = byPosition(undraftedPitchers, "SP");
+  const relievers = byPosition(undraftedPitchers, "RP");
+
   const roundNumber = Math.ceil(pickNumber / 12);
   const pickInRound = ((pickNumber - 1) % 12) + 1;
 
@@ -111,51 +124,15 @@ export const FantasyBaseballDraftTool = () => {
         <PlayerTable players={undraftedPitchers} onDraft={handleDraft} />
       </Group>
       <Flex gap={"md"} direction={"row"} wrap={"wrap"}>
-        <PlayerTable
-          players={undraftedHitters}
-          onDraft={handleDraft}
-          position="C"
-        />
-        <PlayerTable
-          players={undraftedHitters}
-          onDraft={handleDraft}
-          position="1B"
-        />
-        <PlayerTable
-          players={undraftedHitters}
-          onDraft={handleDraft}
-          position="2B"
-        />
-        <PlayerTable
-          players={undraftedHitters}
-          onDraft={handleDraft}
-          position="3B"
-        />
-        <PlayerTable
-          players={undraftedHitters}
-          onDraft={handleDraft}
-          position="SS"
-        />
-        <PlayerTable
-          players={undraftedHitters}
-          onDraft={handleDraft}
-          position="OF"
-        />
-        <PlayerTable
-          players={undraftedHitters}
-          onDraft={handleDraft}
-          position="DH"
-        />
-        <PlayerTable
-          players={undraftedPitchers}
-          onDraft={handleDraft}
-          position="SP"
-        />
-        <PlayerTable
-          players={undraftedPitchers}
-          onDraft={handleDraft}
-          position="RP"
-        />
+        <PlayerTable players={catchers} onDraft={handleDraft} position="C" />
+        <PlayerTable players={firstBase} onDraft={handleDraft} position="1B" />
+        <PlayerTable players={secondBase} onDraft={handleDraft} position="2B" />
+        <PlayerTable players={thirdBase} onDraft={handleDraft} position="3B" />
+        <PlayerTable players={shortstops} onDraft={handleDraft} position="SS" />
+        <PlayerTable players={outfielders} onDraft={handleDraft} position="OF" />
+        <PlayerTable players={designatedHitters} onDraft={handleDraft} position="DH" />
+        <PlayerTable players={startingPitchers} onDraft={handleDraft} position="SP" />
+        <PlayerTable players={relievers} onDraft={handleDraft} position="RP" />
       </Flex>
     </Stack>
   );
