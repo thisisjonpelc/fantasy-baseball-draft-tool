@@ -23,6 +23,8 @@ interface DataRow {
   Tier: string;
 }
 
+const POSITIONS = ["C", "1B", "2B", "3B", "SS", "OF", "DH", "SP", "RP"] as const;
+
 export const FantasyBaseballDraftTool = () => {
   const [playerData, setPlayerData] = useState<Player[]>([]);
   const [draftedPlayers, setDraftedPlayers] = useState<Player[]>([]);
@@ -70,18 +72,15 @@ export const FantasyBaseballDraftTool = () => {
     (p) => !draftedIds.has(p.id) && p.name.toLowerCase().includes(search),
   );
 
-  const byPosition = (players: Player[], pos: string) =>
-    players.filter((p) => p.position.split("/").includes(pos));
+  const groupByPosition = (players: Player[]): Record<string, Player[]> =>
+    players.reduce<Record<string, Player[]>>((acc, player) => {
+      for (const pos of player.position.split("/")) {
+        (acc[pos] ??= []).push(player);
+      }
+      return acc;
+    }, {});
 
-  const catchers = byPosition(undraftedPlayers, "C");
-  const firstBase = byPosition(undraftedPlayers, "1B");
-  const secondBase = byPosition(undraftedPlayers, "2B");
-  const thirdBase = byPosition(undraftedPlayers, "3B");
-  const shortstops = byPosition(undraftedPlayers, "SS");
-  const outfielders = byPosition(undraftedPlayers, "OF");
-  const designatedHitters = byPosition(undraftedPlayers, "DH");
-  const startingPitchers = byPosition(undraftedPlayers, "SP");
-  const relievers = byPosition(undraftedPlayers, "RP");
+  const playersByPosition = groupByPosition(undraftedPlayers);
 
   const roundNumber = Math.ceil(pickNumber / 12);
   const pickInRound = ((pickNumber - 1) % 12) + 1;
@@ -102,79 +101,19 @@ export const FantasyBaseballDraftTool = () => {
         <PlayerTable players={undraftedPlayers} onDraft={handleDraft} />
         <Tabs defaultValue="C">
           <Tabs.List>
-            <Tabs.Tab value="C">C</Tabs.Tab>
-            <Tabs.Tab value="1B">1B</Tabs.Tab>
-            <Tabs.Tab value="2B">2B</Tabs.Tab>
-            <Tabs.Tab value="3B">3B</Tabs.Tab>
-            <Tabs.Tab value="SS">SS</Tabs.Tab>
-            <Tabs.Tab value="OF">OF</Tabs.Tab>
-            <Tabs.Tab value="DH">DH</Tabs.Tab>
-            <Tabs.Tab value="SP">SP</Tabs.Tab>
-            <Tabs.Tab value="RP">RP</Tabs.Tab>
+            {POSITIONS.map((pos) => (
+              <Tabs.Tab key={pos} value={pos}>{pos}</Tabs.Tab>
+            ))}
           </Tabs.List>
-          <Tabs.Panel value="C">
-            <PositionTable
-              players={catchers}
-              onDraft={handleDraft}
-              position="C"
-            />
-          </Tabs.Panel>
-          <Tabs.Panel value="1B">
-            <PositionTable
-              players={firstBase}
-              onDraft={handleDraft}
-              position="1B"
-            />
-          </Tabs.Panel>
-          <Tabs.Panel value="2B">
-            <PositionTable
-              players={secondBase}
-              onDraft={handleDraft}
-              position="2B"
-            />
-          </Tabs.Panel>
-          <Tabs.Panel value="3B">
-            <PositionTable
-              players={thirdBase}
-              onDraft={handleDraft}
-              position="3B"
-            />
-          </Tabs.Panel>
-          <Tabs.Panel value="SS">
-            <PositionTable
-              players={shortstops}
-              onDraft={handleDraft}
-              position="SS"
-            />
-          </Tabs.Panel>
-          <Tabs.Panel value="OF">
-            <PositionTable
-              players={outfielders}
-              onDraft={handleDraft}
-              position="OF"
-            />
-          </Tabs.Panel>
-          <Tabs.Panel value="DH">
-            <PositionTable
-              players={designatedHitters}
-              onDraft={handleDraft}
-              position="DH"
-            />
-          </Tabs.Panel>
-          <Tabs.Panel value="SP">
-            <PositionTable
-              players={startingPitchers}
-              onDraft={handleDraft}
-              position="SP"
-            />
-          </Tabs.Panel>
-          <Tabs.Panel value="RP">
-            <PositionTable
-              players={relievers}
-              onDraft={handleDraft}
-              position="RP"
-            />
-          </Tabs.Panel>
+          {POSITIONS.map((pos) => (
+            <Tabs.Panel key={pos} value={pos}>
+              <PositionTable
+                players={playersByPosition[pos] ?? []}
+                onDraft={handleDraft}
+                position={pos}
+              />
+            </Tabs.Panel>
+          ))}
         </Tabs>
       </Group>
     </Stack>
