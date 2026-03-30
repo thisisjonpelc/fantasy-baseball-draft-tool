@@ -25,4 +25,5 @@ dist-ssr
 
 public/fangraphs-auction-calculator-hitters.csv
 public/fangraphs-auction-calculator-pitchers.csv
+public/fangraphs-auction-calculator-combined.csv
 
