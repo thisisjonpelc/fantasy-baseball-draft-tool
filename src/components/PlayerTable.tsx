@@ -25,9 +25,12 @@ export const PlayerTable = ({ players, onDraft }: PlayerTableProps) => {
     const diff = i === 0 ? 0 : value - topValue;
     return (
       <Table.Tr
-        key={id}
+        key={`${id}-${pos}`}
         onClick={() => onDraft(player)}
-        style={{ cursor: "pointer", backgroundColor: TIER_COLORS[(tier - 1) % 4] }}
+        style={{
+          cursor: "pointer",
+          backgroundColor: TIER_COLORS[(tier - 1) % 4],
+        }}
       >
         <Table.Td>{name}</Table.Td>
         <Table.Td>{team}</Table.Td>
